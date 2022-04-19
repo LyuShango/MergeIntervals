@@ -1,0 +1,87 @@
+class Solution {
+    
+    public static void Merge(int[][] intervals, int left, int right, int middle){
+        int llen = middle-left+1;
+        int rlen = right-middle;
+        int len = right-left+1;
+        int[][] ans = new int[len][2];
+        int i=left;
+        int j=middle+1;
+        int k=0;
+        while(i<=middle && j<=right){
+            if(intervals[i][0] <= intervals[j][0]){
+                ans[k] = intervals[i];
+                i++;
+                k++;
+            }
+            else{
+                ans[k] = intervals[j];
+                j++;
+                k++;
+            }
+        }
+        if(i<=middle){
+            while(i<=middle){
+                ans[k] = intervals[i];
+                i++;
+                k++;
+            }
+        }
+        if(j<=right){
+            while(j<=right){
+                ans[k] = intervals[j];
+                j++;
+                k++;
+            }
+        }
+        for(int p=0;p<len;p++){
+            intervals[p+left] = ans[p];
+        }
+    }
+
+    public static void MergeSort(int[][] intervals, int left, int right){
+        if(left != right){
+            int middle = (left+right)/2;
+            MergeSort(intervals, left, middle);
+            MergeSort(intervals, middle+1, right);
+            Merge(intervals, left, right, middle);
+            return;
+        }else{
+            return;
+        }
+    }
+
+    public int[][] merge(int[][] intervals) {
+        MergeSort(intervals, 0, intervals.length-1);
+        int num=0;
+        ArrayList<int[]> lans = new ArrayList<>();
+        int i=0;
+        int j=1;
+        while(j<intervals.length){
+            if(intervals[i][1]<intervals[j][0]){
+                lans.add(intervals[i]);
+                i=j;
+                j++;
+                continue;
+            }
+            if(intervals[i][1]>=intervals[j][1]){
+                j++;
+                continue;
+            }
+            if(intervals[i][1]>=intervals[j][0]){
+                intervals[i][1]=intervals[j][1];
+                j++;
+                continue;
+            }
+        }
+        lans.add(intervals[i]);
+        int size = lans.size();
+        int[][] ans = new int[size][2];
+        int p=0;
+        for(int[] e:lans){
+            ans[p]=e;
+            p++;
+        }
+        return ans;
+    }
+}
